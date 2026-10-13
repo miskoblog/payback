@@ -338,8 +338,12 @@ function computeCalibration(s, cut) {
       if (hr <= 0.25) bestF = { fix: t, hitRate: hr, count: g.length };
     }
     if (bestP) {
-      const fix = bestF ? Math.min(bestF.fix, bestP.promote) : cut.fix;
-      suggest = { promote: bestP.promote, promoteHit: bestP.hitRate, promoteCount: bestP.count, fix, fixFound: !!bestF, fixHit: bestF ? bestF.hitRate : null };
+      let fix = cut.fix, fixHit = null, fixFound = false;
+      if (bestF) {
+        const f = Math.min(bestF.fix, bestP.promote), g = e.filter((x) => x.score < f);
+        if (g.length) { fix = f; fixHit = g.filter((x) => x.result > med).length / g.length; fixFound = true; }
+      }
+      suggest = { promote: bestP.promote, promoteHit: bestP.hitRate, promoteCount: bestP.count, fix: Math.min(fix, bestP.promote), fixFound, fixHit };
     }
   }
   return { count, median: med, r, bands, trust, suggest, cut, entries: e };
