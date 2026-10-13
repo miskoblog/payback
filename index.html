@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Payback — turn credits and scores into money</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='4' y1='2' x2='28' y2='30' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%234636E3'/%3E%3Cstop offset='1' stop-color='%237C3AED'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M10 22v-5M16 22v-9M22 22V10' stroke='%23FAF9F6' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="gate" id="gate">
+    <form class="gate-card" id="gateForm">
+      <span class="gate-mark" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 32 32"><defs><linearGradient id="PaybackGateMark" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4636E3" /><stop offset="1" stop-color="#7C3AED" /></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#PaybackGateMark)" /><path d="M10 22v-5M16 22v-9M22 22V10" stroke="#FAF9F6" stroke-width="2.6" stroke-linecap="round" fill="none" /></svg>
+      </span>
+      <h1>Payback</h1>
+      <p>Enter the access password to open this bonus.</p>
+      <label class="sr-only" for="gatePassword">Password</label>
+      <input type="password" id="gatePassword" placeholder="Password" autocomplete="off" autofocus />
+      <button type="submit" class="primary-btn">Unlock</button>
+      <p class="gate-error" id="gateError">That password isn't right — try again.</p>
+    </form>
+  </div>
+  <script>
+    try {
+      if (localStorage.getItem("payback_access") === "granted") {
+        document.getElementById("gate").classList.add("is-unlocked");
+      }
+      var storedTheme = localStorage.getItem("payback_theme");
+      if (storedTheme === "dark" || storedTheme === "light") {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+    } catch (e) {}
+  </script>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 32 32"><defs><linearGradient id="PaybackMark" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4636E3" /><stop offset="1" stop-color="#7C3AED" /></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#PaybackMark)" /><path d="M10 22v-5M16 22v-9M22 22V10" stroke="#FAF9F6" stroke-width="2.6" stroke-linecap="round" fill="none" /></svg>
+      </span>
+      <div class="brand-text">
+        <span class="brand-name">Payback</span>
+        <span class="brand-tag">Credits → price → proof</span>
+      </div>
+    </div>
+    <a class="powered-by" href="https://misanmorrison.com/" target="_blank" rel="noopener">
+      <span>Powered by</span>
+      <strong>Misan Morrison</strong>
+    </a>
+    <nav class="tabs" role="tablist" aria-label="Payback modules">
+      <button class="tab-btn is-active" data-tab="guide" role="tab" aria-selected="true">How to Use</button>
+      <button class="tab-btn" data-tab="creditmap" role="tab" aria-selected="false">CreditMap</button>
+      <button class="tab-btn" data-tab="retainer" role="tab" aria-selected="false">Retainer</button>
+      <button class="tab-btn" data-tab="proven" role="tab" aria-selected="false">Proven</button>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme" title="Switch theme">
+      <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+      <svg id="themeIconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+    </button>
+  </header>
+
+  <main class="app">
+
+    <!-- ===================== HOW TO USE ===================== -->
+    <section class="panel is-active" id="panel-guide">
+      <div class="panel-head">
+        <h1>How to Use Payback</h1>
+        <p>Payback is a free companion to Postonomous. Postonomous makes and scores your content; Payback helps you put numbers on it. <strong>Start with CreditMap</strong> to see what your monthly credits cover, then use <strong>Retainer</strong> to price the service, and <strong>Proven</strong> to decide where ad money goes. Each tab works on its own, so open whichever you need today.</p>
+      </div>
+      <div class="guide">
+
+        <div class="guide-section guide-first">
+          <h2>Before you start</h2>
+          <p>Every calculator in Payback runs inside this page. There is nothing to connect, no API key, and no account. Type numbers in, and the answer appears on the right as you type.</p>
+        </div>
+
+        <div class="guide-section">
+          <h2><span class="guide-number">A</span> CreditMap — know where every credit goes</h2>
+          <p>Open the <span class="ui-ref">CreditMap</span> tab. It has three tools along the top.</p>
+          <h3>1. Credit Budget Builder</h3>
+          <ol>
+            <li>Type a name in <span class="ui-ref">Brand or package name</span>, then fill in what that brand gets each month: posts, networks, images, scored posts, competitor checks, shorts, ads and long videos.</li>
+            <li>Not sure where to begin? Press <span class="ui-ref">Load sales-page Month A business</span> to see the vendor's own 990-credit example.</li>
+            <li>The right side shows the credits per line and the total. Credit costs come from the Postonomous sales page. Open <span class="ui-ref">Credit rate card</span> to change any of them, and check them against the Billing page inside Postonomous.</li>
+            <li>Tick <span class="ui-ref">I use my own AI key for text actions</span> if you have plugged in your own key. Lines marked as text then cost 0.</li>
+            <li>Press <span class="ui-ref">Add to Brand Split</span> to send this package to the next tool. Press <span class="ui-ref">Save</span> to keep it, <span class="ui-ref">Copy</span> to paste it somewhere. Saved packages appear under <span class="ui-ref">Saved Credit Budgets</span>: press <span class="ui-ref">Open</span> to bring one back with all its numbers, or <span class="ui-ref">Delete</span> to remove it.</li>
+          </ol>
+          <h3>2. Brand Split &amp; Plan-Fit Checker</h3>
+          <ol>
+            <li>Pick your credit pool in <span class="ui-ref">Monthly credit pool</span> (5,000, 7,000, 10,000 or your own number).</li>
+            <li>Press <span class="ui-ref">Add brand</span> for each client. Enter the monthly fee, the credits that brand needs, and a priority (1 = normal, 2 = twice as important).</li>
+            <li>If the plan is bigger than the pool, credits are shared out by fee × priority. Anyone who needs less than their share keeps only what they need, and the rest is passed on. The table shows who is short and by how much.</li>
+            <li>The <span class="ui-ref">Plan fit</span> table compares the same plan against each pool size and brand limit. It shows arithmetic only. It does not tell you what to buy.</li>
+            <li>Use <span class="ui-ref">Save</span>, <span class="ui-ref">Open</span> and <span class="ui-ref">Delete</span> under <span class="ui-ref">Saved Brand Splits</span> to keep different client line-ups.</li>
+          </ol>
+          <h3>3. Use-It-or-Lose-It Tracker</h3>
+          <ol>
+            <li>Set <span class="ui-ref">Credits this month</span>, the days in the month, and today's day number.</li>
+            <li>Press <span class="ui-ref">Add entry</span> each time you spend credits. Pick the brand, enter the credits, and add a note.</li>
+            <li>The table compares each brand's spend with its plan from tool 2, projects the month-end balance, and shows credits that would expire unused (unused credits don't carry over).</li>
+            <li>Press <span class="ui-ref">Save</span> at month end to keep a snapshot under <span class="ui-ref">Saved Months</span>.</li>
+          </ol>
+        </div>
+
+        <div class="guide-section">
+          <h2><span class="guide-number">B</span> Retainer — turn your credits into a price</h2>
+          <p>Open the <span class="ui-ref">Retainer</span> tab.</p>
+          <h3>1. Retainer Pricing Engine</h3>
+          <ol>
+            <li>Choose <span class="ui-ref">Business type</span> and <span class="ui-ref">Local market</span>, then enter what you will deliver each month.</li>
+            <li>Enter your <span class="ui-ref">Hourly rate</span> and the <span class="ui-ref">Target margin</span> you want. Leave <span class="ui-ref">Hours per month (optional)</span> blank to use an estimate.</li>
+            <li>You get <strong>Good / Better / Best</strong> monthly prices. Each is the higher of your cost-plus-margin floor and the market estimate, which stays inside the $500–$5,000 range the Postonomous page quotes. The market estimate is a planning guide, not a forecast.</li>
+            <li><span class="ui-ref">Save</span>, <span class="ui-ref">Open</span> and <span class="ui-ref">Delete</span> work under <span class="ui-ref">Saved Price Quotes</span>.</li>
+          </ol>
+          <h3>2. Margin &amp; Payback Calculator</h3>
+          <ol>
+            <li>Press <span class="ui-ref">Use Better price from Pricing Engine</span> to fill the price, credits and hours, or type your own.</li>
+            <li>Choose the tool cost you paid ($287 with the coupon, $347 list, or your own number).</li>
+            <li>The table shows profit per month and months to recoup the tool for 1, 5, 10 and your own number of clients. The <span class="ui-ref">Claim check</span> box tests the sales page's "one client covers the Bundle" idea against your numbers.</li>
+            <li>Keep scenarios under <span class="ui-ref">Saved Margin Scenarios</span> with <span class="ui-ref">Save</span>, <span class="ui-ref">Open</span> and <span class="ui-ref">Delete</span>.</li>
+          </ol>
+          <h3>3. Audit One-Pager</h3>
+          <ol>
+            <li>Score a prospect's last five posts in Postonomous and type the five scores into <span class="ui-ref">Post 1 score</span> to <span class="ui-ref">Post 5 score</span>. Then type the score of the weakest post after the rewrite in <span class="ui-ref">Weakest post, rewritten score</span>.</li>
+            <li>Choose which price to quote in <span class="ui-ref">Price to show</span>, then add your agency and the prospect's business name.</li>
+            <li>Press <span class="ui-ref">Print / Save as PDF</span> to hand over a one-page findings sheet. This is a leave-behind, not an outreach message or a proposal.</li>
+            <li><span class="ui-ref">Save</span>, <span class="ui-ref">Open</span> and <span class="ui-ref">Delete</span> keep one sheet per prospect under <span class="ui-ref">Saved Audits</span>.</li>
+          </ol>
+        </div>
+
+        <div class="guide-section">
+          <h2><span class="guide-number">C</span> Proven — put ad money where the score says</h2>
+          <p>Open the <span class="ui-ref">Proven</span> tab. Postonomous does not run ads, so these tools help you decide how to split a budget you spend elsewhere.</p>
+          <h3>1. Budget Splitter</h3>
+          <ol>
+            <li>Enter your <span class="ui-ref">Total boost budget</span> and the <span class="ui-ref">Test reserve %</span> you want to keep aside.</li>
+            <li>Press <span class="ui-ref">Add draft</span> for each draft and enter its WinScore.</li>
+            <li>Drafts below <span class="ui-ref">"Fix it first" below</span> go back to Champion Mode. Drafts at or above <span class="ui-ref">"Worth promoting" from</span> share the budget, with higher scores getting more. The test reserve goes to the best "Not yet" draft.</li>
+            <li>Press <span class="ui-ref">Send to Boost Ledger</span> to carry the split into tool 3. Use <span class="ui-ref">Save</span>, <span class="ui-ref">Open</span> and <span class="ui-ref">Delete</span> under <span class="ui-ref">Saved Budget Splits</span>.</li>
+          </ol>
+          <h3>2. Predicted-vs-Actual Calibration Log</h3>
+          <ol>
+            <li>Name the result you measure in <span class="ui-ref">Result you measure</span> (for example, engagements or reach).</li>
+            <li>Press <span class="ui-ref">Add post</span> for every published post. Enter its WinScore and what it actually got.</li>
+            <li>With 8 or more posts, the tool shows how closely your scores tracked results and suggests your own cutoffs. Press <span class="ui-ref">Apply suggested cutoffs</span> to use them in the Budget Splitter.</li>
+            <li>Keep logs with <span class="ui-ref">Save</span>, <span class="ui-ref">Open</span> and <span class="ui-ref">Delete</span> under <span class="ui-ref">Saved Calibration Logs</span>.</li>
+          </ol>
+          <h3>3. Boost Ledger</h3>
+          <ol>
+            <li>Rows arrive from the splitter, or press <span class="ui-ref">Add post</span> to type your own. Enter the money spent and the results it brought.</li>
+            <li>The tool shows cost per result for each score tier, so you can see whether higher-scored posts were cheaper to promote, and compares that to your calibration cutoff.</li>
+            <li>Use <span class="ui-ref">Save</span>, <span class="ui-ref">Open</span> and <span class="ui-ref">Delete</span> under <span class="ui-ref">Saved Ledgers</span> to keep a ledger per campaign.</li>
+          </ol>
+        </div>
+
+        <div class="guide-section guide-note">
+          <h2>One thing to know</h2>
+          <p>Everything you type, plus every saved item, is stored in <strong>this browser only</strong>. There are no accounts and nothing is sent anywhere. A different browser or device starts empty, and clearing your browser data erases your saved work. Every number here is an estimate for planning, not a forecast, a promise of earnings, or a guarantee of results. A WinScore is a signal, not a guarantee.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CREDITMAP ===================== -->
+    <section class="panel" id="panel-creditmap">
+      <div class="panel-head">
+        <h1>CreditMap</h1>
+        <p>Know where every credit goes before the month starts. Plan the credits, split them across brands, and track what is left.</p>
+      </div>
+      <div class="subtabs" role="tablist" aria-label="CreditMap tools">
+        <button class="sub-btn is-active" data-sub="cm-builder" role="tab" aria-selected="true">Credit Budget Builder</button>
+        <button class="sub-btn" data-sub="cm-split" role="tab" aria-selected="false">Brand Split &amp; Plan-Fit</button>
+        <button class="sub-btn" data-sub="cm-track" role="tab" aria-selected="false">Use-It-or-Lose-It Tracker</button>
+      </div>
+
+      <!-- Builder -->
+      <div class="subpanel is-active" id="sub-cm-builder">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field"><label for="cmb-name">Brand or package name</label><input type="text" id="cmb-name" data-k="name" placeholder="e.g. Corner Café" /></div>
+            <div class="field-row">
+              <div class="field"><label for="cmb-posts">Posts per month</label><input type="number" min="0" id="cmb-posts" data-k="posts" /></div>
+              <div class="field"><label for="cmb-networks">Networks per post</label><input type="number" min="0" id="cmb-networks" data-k="networks" /></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="cmb-images">Branded images</label><input type="number" min="0" id="cmb-images" data-k="images" /></div>
+              <div class="field"><label for="cmb-scored">Posts scored</label><input type="number" min="0" id="cmb-scored" data-k="scored" /></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="cmb-competitor">Competitor checks</label><input type="number" min="0" id="cmb-competitor" data-k="competitor" /></div>
+              <div class="field"><label for="cmb-short">Viral short videos</label><input type="number" min="0" id="cmb-short" data-k="short" /></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="cmb-ad">15-second ads</label><input type="number" min="0" id="cmb-ad" data-k="ad" /></div>
+              <div class="field"><label for="cmb-musicvids">Long videos with music</label><input type="number" min="0" id="cmb-musicvids" data-k="musicvids" /></div>
+            </div>
+            <div class="field-row three">
+              <div class="field"><label for="cmb-wb">Whiteboard minutes</label><input type="number" min="0" id="cmb-wb" data-k="wb" /></div>
+              <div class="field"><label for="cmb-doc">Documentary minutes</label><input type="number" min="0" id="cmb-doc" data-k="doc" /></div>
+              <div class="field"><label for="cmb-spk">Spokesperson minutes</label><input type="number" min="0" id="cmb-spk" data-k="spk" /></div>
+            </div>
+            <div class="field check"><label><input type="checkbox" data-k="byo" /> I use my own AI key for text actions</label></div>
+            <div class="btn-row">
+              <button class="ghost-btn" type="button" id="cmb-preset">Load sales-page Month A business</button>
+              <button class="ghost-btn" type="button" id="cmb-clear">Clear</button>
+            </div>
+            <details class="rate-card">
+              <summary>Credit rate card</summary>
+              <p class="hint">Prefilled from the worked examples on the Postonomous sales page. Confirm each against the Billing page inside Postonomous and edit if yours differ.</p>
+              <div id="cmb-rates"></div>
+              <button class="ghost-btn" type="button" id="cmb-rates-reset">Reset to sales-page defaults</button>
+            </details>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Credit Budget</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                  <button class="primary-btn" type="button" id="cmb-addplan">Add to Brand Split</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Credit Budgets</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Split -->
+      <div class="subpanel" id="sub-cm-split">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field"><label for="cms-pool">Monthly credit pool</label>
+              <select id="cms-pool" data-k="pool">
+                <option value="5000">5,000 — Bundle (10 brands)</option>
+                <option value="7000">7,000 — Mega Bundle Lite (50 brands)</option>
+                <option value="10000">10,000 — Mega Bundle (unlimited brands, fair use)</option>
+                <option value="custom">My own number</option>
+              </select></div>
+            <div class="field" id="cms-custom-wrap"><label for="cms-custom">Custom pool (credits)</label><input type="number" min="0" id="cms-custom" data-k="customPool" /></div>
+            <div class="field"><label>Brands</label>
+              <div id="cms-rows"></div>
+              <button class="ghost-btn" type="button" id="cms-add">Add brand</button>
+            </div>
+            <p class="hint">Priority: 1 = normal, 2 = twice as important when credits run short. Fee is what the brand pays you per month; leave 0 if unknown.</p>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Credit Split</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Brand Splits</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tracker -->
+      <div class="subpanel" id="sub-cm-track">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field"><label for="cmt-pool">Credits this month</label><input type="number" min="0" id="cmt-pool" data-k="pool" /></div>
+            <div class="field-row">
+              <div class="field"><label for="cmt-days">Days in the month</label><input type="number" min="1" max="31" id="cmt-days" data-k="days" /></div>
+              <div class="field"><label for="cmt-day">Today is day</label><input type="number" min="1" max="31" id="cmt-day" data-k="day" /></div>
+            </div>
+            <div class="btn-row"><button class="ghost-btn" type="button" id="cmt-usepool">Use pool from Brand Split</button></div>
+            <div class="field"><label>Credits spent</label>
+              <div id="cmt-rows"></div>
+              <button class="ghost-btn" type="button" id="cmt-add">Add entry</button>
+            </div>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Month Pace</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Months</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RETAINER ===================== -->
+    <section class="panel" id="panel-retainer">
+      <div class="panel-head">
+        <h1>Retainer</h1>
+        <p>Turn your credits into a retainer you can quote on Monday. Price the service, check your margin, and leave a one-page audit behind.</p>
+      </div>
+      <div class="subtabs" role="tablist" aria-label="Retainer tools">
+        <button class="sub-btn is-active" data-sub="rt-price" role="tab" aria-selected="true">Retainer Pricing Engine</button>
+        <button class="sub-btn" data-sub="rt-margin" role="tab" aria-selected="false">Margin &amp; Payback</button>
+        <button class="sub-btn" data-sub="rt-audit" role="tab" aria-selected="false">Audit One-Pager</button>
+      </div>
+
+      <!-- Pricing -->
+      <div class="subpanel is-active" id="sub-rt-price">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field"><label for="rtp-type">Business type</label>
+              <select id="rtp-type" data-k="type">
+                <option value="cafe">Café or bakery</option>
+                <option value="dentist">Dentist or clinic</option>
+                <option value="gym">Gym or studio</option>
+                <option value="salon">Salon</option>
+                <option value="realtor">Realtor</option>
+                <option value="contractor">Contractor</option>
+                <option value="bookkeeper">Bookkeeper</option>
+                <option value="coach">Coach</option>
+                <option value="other">Other local business</option>
+              </select></div>
+            <div class="field"><label for="rtp-market">Local market</label>
+              <select id="rtp-market" data-k="market">
+                <option value="small">Small town</option>
+                <option value="mid">Mid-size city</option>
+                <option value="metro">Major metro</option>
+              </select></div>
+            <div class="field-row">
+              <div class="field"><label for="rtp-networks">Networks per post</label><input type="number" min="1" max="7" id="rtp-networks" data-k="networks" /></div>
+              <div class="field"><label for="rtp-posts">Posts per month</label><input type="number" min="0" id="rtp-posts" data-k="posts" /></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="rtp-images">Branded images</label><input type="number" min="0" id="rtp-images" data-k="images" /></div>
+              <div class="field"><label for="rtp-shorts">Short videos</label><input type="number" min="0" id="rtp-shorts" data-k="shorts" /></div>
+            </div>
+            <div class="field-row three wide-last">
+              <div class="field"><label for="rtp-longcount">Long videos</label><input type="number" min="0" id="rtp-longcount" data-k="longCount" /></div>
+              <div class="field"><label for="rtp-longmin">Minutes each</label><input type="number" min="0" id="rtp-longmin" data-k="longMin" /></div>
+              <div class="field"><label for="rtp-style">Long video style</label>
+                <select id="rtp-style" data-k="style"><option value="wb">Whiteboard</option><option value="doc">Documentary</option><option value="spk">Spokesperson</option></select></div>
+            </div>
+            <div class="field check"><label><input type="checkbox" data-k="scoreAll" /> Score every post before it goes out</label></div>
+            <div class="field-row three">
+              <div class="field"><label for="rtp-rate">Hourly rate ($)</label><input type="number" min="0" id="rtp-rate" data-k="rate" /></div>
+              <div class="field"><label for="rtp-margin">Target margin (%)</label><input type="number" min="0" max="90" id="rtp-margin" data-k="margin" /></div>
+              <div class="field"><label for="rtp-hours">Hours per month (optional)</label><input type="number" min="0" id="rtp-hours" data-k="hours" placeholder="auto" /></div>
+            </div>
+            <div class="field-row three">
+              <div class="field"><label for="rtp-tool">Tool price paid ($)</label><input type="number" min="0" id="rtp-tool" data-k="tool" /></div>
+              <div class="field"><label for="rtp-amort">Spread over (months)</label><input type="number" min="1" id="rtp-amort" data-k="amort" /></div>
+              <div class="field"><label for="rtp-pool">Credits per month</label><input type="number" min="1" id="rtp-pool" data-k="pool" /></div>
+            </div>
+            <div class="field"><label for="rtp-name">Client or quote name (optional)</label><input type="text" id="rtp-name" data-k="name" placeholder="e.g. Bright Smiles Dental" /></div>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Good / Better / Best</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Price Quotes</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Margin -->
+      <div class="subpanel" id="sub-rt-margin">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="btn-row"><button class="ghost-btn" type="button" id="rtm-use">Use Better price from Pricing Engine</button></div>
+            <div class="field-row">
+              <div class="field"><label for="rtm-price">Monthly price per client ($)</label><input type="number" min="0" id="rtm-price" data-k="price" /></div>
+              <div class="field"><label for="rtm-clients">Your number of clients</label><input type="number" min="1" id="rtm-clients" data-k="clients" /></div>
+            </div>
+            <div class="field"><label for="rtm-tool">Tool cost paid ($)</label>
+              <input type="number" min="0" id="rtm-tool" data-k="tool" />
+              <div class="chips"><button class="chip" type="button" data-set-tool="287">$287 with coupon</button><button class="chip" type="button" data-set-tool="347">$347 list</button></div></div>
+            <div class="field-row">
+              <div class="field"><label for="rtm-credits">Credits used per client</label><input type="number" min="0" id="rtm-credits" data-k="credits" /></div>
+              <div class="field"><label for="rtm-pool">Credits in your pool</label><input type="number" min="0" id="rtm-pool" data-k="pool" /></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="rtm-hours">Hours per client per month</label><input type="number" min="0" id="rtm-hours" data-k="hours" /></div>
+              <div class="field"><label for="rtm-rate">Your hourly rate ($)</label><input type="number" min="0" id="rtm-rate" data-k="rate" /></div>
+            </div>
+            <div class="field"><label for="rtm-overhead">Other monthly costs ($)</label><input type="number" min="0" id="rtm-overhead" data-k="overhead" /></div>
+            <div class="field check"><label><input type="checkbox" data-k="countTime" /> Count my time as a cost</label></div>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Margin &amp; Payback</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Margin Scenarios</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit -->
+      <div class="subpanel" id="sub-rt-audit">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field"><label for="rta-agency">Your agency or name</label><input type="text" id="rta-agency" data-k="agency" placeholder="e.g. Northside Social" /></div>
+            <div class="field"><label for="rta-contact">Your contact line (optional)</label><input type="text" id="rta-contact" data-k="contact" placeholder="email or phone" /></div>
+            <div class="field"><label for="rta-prospect">Prospect's business</label><input type="text" id="rta-prospect" data-k="prospect" placeholder="e.g. Bright Smiles Dental" /></div>
+            <div class="field"><label>Last five posts, scored</label>
+              <div class="score-grid">
+                <div><label for="rta-s1">Post 1 score</label><input type="number" min="0" max="100" id="rta-s1" data-k="s1" /></div>
+                <div><label for="rta-s2">Post 2 score</label><input type="number" min="0" max="100" id="rta-s2" data-k="s2" /></div>
+                <div><label for="rta-s3">Post 3 score</label><input type="number" min="0" max="100" id="rta-s3" data-k="s3" /></div>
+                <div><label for="rta-s4">Post 4 score</label><input type="number" min="0" max="100" id="rta-s4" data-k="s4" /></div>
+                <div><label for="rta-s5">Post 5 score</label><input type="number" min="0" max="100" id="rta-s5" data-k="s5" /></div>
+              </div></div>
+            <div class="field"><label for="rta-weak">Weakest post, in a few words</label><input type="text" id="rta-weak" data-k="weakLabel" placeholder="e.g. the Saturday sale post" /></div>
+            <div class="field"><label for="rta-rewrite">Weakest post, rewritten score</label><input type="number" min="0" max="100" id="rta-rewrite" data-k="rewritten" /></div>
+            <div class="field"><label for="rta-tier">Price to show</label>
+              <select id="rta-tier" data-k="tier"><option value="good">Good (from Pricing Engine)</option><option value="better">Better (from Pricing Engine)</option><option value="best">Best (from Pricing Engine)</option><option value="custom">My own price</option><option value="none">Don't show a price</option></select></div>
+            <div class="field" id="rta-custom-wrap"><label for="rta-custom">My monthly price ($)</label><input type="number" min="0" id="rta-custom" data-k="customPrice" /></div>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Audit One-Pager</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                  <button class="primary-btn" type="button" id="rta-print">Print / Save as PDF</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Audits</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROVEN ===================== -->
+    <section class="panel" id="panel-proven">
+      <div class="panel-head">
+        <h1>Proven</h1>
+        <p>Put the ad budget behind the post the score says deserves it, then check whether the scores held up. Postonomous does not run ads; these tools help you decide where the money you spend elsewhere goes.</p>
+      </div>
+      <div class="subtabs" role="tablist" aria-label="Proven tools">
+        <button class="sub-btn is-active" data-sub="pv-split" role="tab" aria-selected="true">Budget Splitter</button>
+        <button class="sub-btn" data-sub="pv-cal" role="tab" aria-selected="false">Calibration Log</button>
+        <button class="sub-btn" data-sub="pv-ledger" role="tab" aria-selected="false">Boost Ledger</button>
+      </div>
+
+      <!-- Splitter -->
+      <div class="subpanel is-active" id="sub-pv-split">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field-row">
+              <div class="field"><label for="pvs-budget">Total boost budget ($)</label><input type="number" min="0" id="pvs-budget" data-k="budget" /></div>
+              <div class="field"><label for="pvs-reserve">Test reserve %</label><input type="number" min="0" max="100" id="pvs-reserve" data-k="reserve" /></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="pvs-fix">"Fix it first" below</label><input type="number" min="0" max="100" id="pvs-fix" data-k="fix" /></div>
+              <div class="field"><label for="pvs-promote">"Worth promoting" from</label><input type="number" min="0" max="100" id="pvs-promote" data-k="promote" /></div>
+            </div>
+            <div class="field"><label>Drafts and WinScores</label>
+              <div id="pvs-rows"></div>
+              <button class="ghost-btn" type="button" id="pvs-add">Add draft</button>
+            </div>
+            <p class="hint">Defaults of 50 and 70 are starting points. The Calibration Log can suggest cutoffs from your own results.</p>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Budget Split</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                  <button class="primary-btn" type="button" id="pvs-send">Send to Boost Ledger</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Budget Splits</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calibration -->
+      <div class="subpanel" id="sub-pv-cal">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field"><label for="pvc-metric">Result you measure</label><input type="text" id="pvc-metric" data-k="metric" placeholder="e.g. engagements, reach, likes" /></div>
+            <div class="field"><label>Published posts</label>
+              <div id="pvc-rows"></div>
+              <button class="ghost-btn" type="button" id="pvc-add">Add post</button>
+            </div>
+            <p class="hint">Enter the WinScore the post had before it went out, and the number it actually got. Use the same measure for every post.</p>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Calibration</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                  <button class="primary-btn" type="button" id="pvc-apply">Apply suggested cutoffs</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Calibration Logs</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ledger -->
+      <div class="subpanel" id="sub-pv-ledger">
+        <div class="workspace">
+          <div class="form-card">
+            <div class="field"><label for="pvl-metric">Result you count</label><input type="text" id="pvl-metric" data-k="metric" placeholder="e.g. leads, clicks, sales" /></div>
+            <div class="field"><label>Boosted posts</label>
+              <div id="pvl-rows"></div>
+              <button class="ghost-btn" type="button" id="pvl-add">Add post</button>
+            </div>
+            <p class="hint">Leave results blank until the boost has finished. Spend still counts in the totals.</p>
+          </div>
+          <div class="out-col">
+            <div class="output-card">
+              <div class="output-head">
+                <span class="output-label">Cost per Result</span>
+                <div class="output-actions">
+                  <button class="ghost-btn" type="button" data-save>Save</button>
+                  <button class="ghost-btn" type="button" data-copy>Copy</button>
+                </div>
+              </div>
+              <div data-out></div>
+            </div>
+            <div class="output-card saved-card">
+              <div class="output-head"><span class="output-label">Saved Ledgers</span></div>
+              <div class="saved-list" data-saved></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
